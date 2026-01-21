@@ -4,7 +4,7 @@ import { ArrowLeft, Calendar } from "lucide-react";
 export default function Loading() {
     return (
         <main className="flex min-h-screen justify-center bg-black text-white animate-pulse">
-            <div className="w-full max-w-xl border-x border-gray-800 min-h-screen p-4">
+            <div className="w-full max-w-xl border-x border-gray-800 min-h-screen px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
                 {/* Header */}
                 <header className="flex items-center gap-4 mb-8">
                     <div className="p-2 rounded-full bg-white/10 h-10 w-10" />

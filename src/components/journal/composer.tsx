@@ -210,7 +210,7 @@ export function EntryComposer() {
         return (
             <button
                 onClick={() => setIsExpanded(true)}
-                className="fixed bottom-6 right-6 h-14 w-14 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-transform hover:scale-105 active:scale-95 z-50 text-white"
+                className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-6 h-14 w-14 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-transform hover:scale-105 active:scale-95 z-50 text-white"
             >
                 <Plus className="h-8 w-8" />
             </button>

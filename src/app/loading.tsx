@@ -3,7 +3,7 @@ export default function Loading() {
     return (
         <div className="min-h-screen bg-black text-white animate-pulse">
             {/* Header Skeleton */}
-            <div className="border-b border-gray-800 p-4 flex justify-between items-center bg-black/80 backdrop-blur-md fixed top-0 left-0 right-0 z-40 h-[69px]">
+            <div className="border-b border-gray-800 px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))] flex justify-between items-center bg-black/80 backdrop-blur-md fixed top-0 left-0 right-0 z-40">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gray-800" />
                     <div className="h-4 w-32 bg-gray-800 rounded" />

@@ -6,7 +6,7 @@ export default function Loading() {
         <main className="flex min-h-screen justify-center animate-pulse">
             <div className="w-full max-w-xl border-x border-gray-800 min-h-screen bg-black text-white">
                 {/* Header */}
-                <header className="sticky top-0 z-10 border-b border-gray-800 bg-black/80 backdrop-blur-md p-4 flex items-center gap-4">
+                <header className="sticky top-0 z-10 border-b border-gray-800 bg-black/80 backdrop-blur-md px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))] flex items-center gap-4">
                     <div className="p-2 rounded-full bg-white/10 h-9 w-9" />
                     <div className="h-6 w-24 bg-gray-800 rounded" />
                 </header>
