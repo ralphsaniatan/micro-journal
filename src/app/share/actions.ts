@@ -29,6 +29,14 @@ export async function recordView(token: string, viewerName: string) {
     const link = await verifyToken(token);
     if (!link) throw new Error("Invalid Link");
 
+    // Enforce Name Matching (Case Insensitive)
+    const normalizedInput = viewerName.trim().toLowerCase();
+    const normalizedLabel = link.label.trim().toLowerCase();
+
+    if (normalizedInput !== normalizedLabel) {
+        throw new Error("Incorrect Name. Please enter the name exactly as it appears on your invitation.");
+    }
+
     // Insert into shared_views
     const { error } = await supabaseAdmin
         .from("shared_views")
