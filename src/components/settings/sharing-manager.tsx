@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createShareLink, revokeShareLink } from "@/app/settings/actions";
-import { Copy, Trash2, Link as LinkIcon, Users, Eye } from "lucide-react";
+import { Copy, Trash2, Link as LinkIcon, Users, Eye, Check } from "lucide-react";
 
 interface SharedLink {
     id: string;
@@ -17,6 +17,7 @@ export function SharingManager({ initialLinks }: { initialLinks: SharedLink[] })
     const [label, setLabel] = useState("");
     const [isPending, startTransition] = useTransition();
     const [revokingId, setRevokingId] = useState<string | null>(null);
+    const [copiedId, setCopiedId] = useState<string | null>(null);
 
     const handleCreate = () => {
         if (!label.trim()) return;
@@ -36,10 +37,11 @@ export function SharingManager({ initialLinks }: { initialLinks: SharedLink[] })
         });
     };
 
-    const copyLink = (token: string) => {
+    const copyLink = (id: string, token: string) => {
         const url = `${window.location.origin}/share/${token}`;
         navigator.clipboard.writeText(url);
-        alert("Link copied!");
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
     };
 
     return (
@@ -127,11 +129,15 @@ export function SharingManager({ initialLinks }: { initialLinks: SharedLink[] })
 
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={() => copyLink(link.token)}
+                                onClick={() => copyLink(link.id, link.token)}
                                 className="p-2 hover:bg-gray-800 rounded text-gray-400 hover:text-white transition-colors"
                                 title="Copy Link"
                             >
-                                <Copy className="h-4 w-4" />
+                                {copiedId === link.id ? (
+                                    <Check className="h-4 w-4 text-green-400" />
+                                ) : (
+                                    <Copy className="h-4 w-4" />
+                                )}
                             </button>
                             <button
                                 onClick={() => setRevokingId(link.id)}
