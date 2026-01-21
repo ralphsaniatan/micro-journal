@@ -88,9 +88,9 @@ export function LoginForm() {
                     <input
                         name="code"
                         type="text"
-                        placeholder="123456"
+                        placeholder="12345678"
                         required
-                        maxLength={6}
+                        maxLength={8}
                         className="w-full rounded-lg border border-gray-800 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 text-center tracking-[0.5em] text-xl focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all uppercase"
                     />
                     <button
