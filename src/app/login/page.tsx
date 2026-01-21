@@ -10,7 +10,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
                     <p className="text-gray-400">Enter your email to sign in or sign up.</p>
                 </div>
 
-                {searchParams.message === "check_email" && (
+                {message === "check_email" && (
                     <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-lg text-sm">
                         Magic link sent! Check your email to log in.
                     </div>
