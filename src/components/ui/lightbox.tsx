@@ -66,7 +66,7 @@ export function Lightbox({ images, initialIndex, isOpen, onClose }: LightboxProp
         >
             <button
                 onClick={onClose}
-                className="absolute top-4 right-4 p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors z-50 md:top-8 md:right-8"
+                className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors z-50 md:top-8 md:right-8"
             >
                 <X className="h-8 w-8" />
             </button>
@@ -99,7 +99,7 @@ export function Lightbox({ images, initialIndex, isOpen, onClose }: LightboxProp
             </div>
 
             {images.length > 1 && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+                <div className="absolute bottom-[max(2rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 flex gap-2">
                     {images.map((_, idx) => (
                         <div
                             key={idx}

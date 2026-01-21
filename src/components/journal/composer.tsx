@@ -223,29 +223,27 @@ export function EntryComposer() {
     return (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col sm:bg-black/50 sm:backdrop-blur-sm sm:items-center sm:justify-center p-0 sm:p-4">
             <div className="flex-1 w-full max-w-xl bg-black sm:border sm:border-gray-800 sm:rounded-2xl flex flex-col overflow-hidden">
-                <div className="flex items-center justify-between p-4 border-b border-gray-800">
+                <div className="flex items-center justify-between px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))] border-b border-gray-800">
                     <button onClick={handleCancel} className="text-white hover:bg-white/10 p-2 rounded-full">
                         <X className="h-6 w-6" />
                     </button>
                     <span className="font-bold text-lg">{title}</span>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={(content.length === 0 && mediaItems.length === 0) || isOverLimit || isPending || isUploading}
-                        className="bg-blue-500 text-white font-bold px-4 py-1.5 rounded-full hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-sm"
-                    >
-                        {(isPending || isUploading) && <Loader2 className="h-4 w-4 animate-spin" />}
-                        {submitLabel}
-                    </button>
+                    <div className="w-10" /> {/* Spacer for centering */}
                 </div>
 
                 <div className="flex-1 p-4 overflow-y-auto">
                     {(editId || !replyToId) && (
                         <div className="flex items-center gap-2 mb-4 pl-[52px]">
                             <span className="text-gray-400 text-sm font-medium">{displayDate}</span>
-                            <button onClick={() => dateInputRef.current?.showPicker()} className="p-1 hover:bg-white/10 rounded-full group">
+                            <label className="p-1 hover:bg-white/10 rounded-full group cursor-pointer">
                                 <Pencil className="h-3.5 w-3.5 text-gray-500 group-hover:text-white" />
-                            </button>
-                            <input type="datetime-local" ref={dateInputRef} value={editDate} onChange={(e) => setEditDate(e.target.value)} className="invisible w-0 h-0" />
+                                <input
+                                    type="datetime-local"
+                                    value={editDate}
+                                    onChange={(e) => setEditDate(e.target.value)}
+                                    className="absolute opacity-0 pointer-events-none"
+                                />
+                            </label>
                         </div>
                     )}
 
@@ -314,7 +312,7 @@ export function EntryComposer() {
                     </div>
                 </div>
 
-                <div className="p-4 border-t border-gray-800 flex items-center justify-between">
+                <div className="px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 border-t border-gray-800 flex items-center justify-between">
                     <div className="flex gap-4 text-blue-400">
                         <button
                             onClick={() => fileInputRef.current?.click()}
@@ -329,6 +327,15 @@ export function EntryComposer() {
                     <div className={`text-sm font-medium ${isOverLimit ? 'text-red-500' : 'text-gray-500'}`}>
                         {charCount} / 240
                     </div>
+
+                    <button
+                        onClick={handleSubmit}
+                        disabled={(content.length === 0 && mediaItems.length === 0) || isOverLimit || isPending || isUploading}
+                        className="bg-blue-500 text-white font-bold px-6 py-2 rounded-full hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-sm"
+                    >
+                        {(isPending || isUploading) && <Loader2 className="h-4 w-4 animate-spin" />}
+                        {submitLabel}
+                    </button>
 
                     <input
                         type="file"
