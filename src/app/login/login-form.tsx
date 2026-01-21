@@ -51,7 +51,7 @@ export function LoginForm() {
     return (
         <div className="w-full max-w-sm space-y-8">
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter">MicroJournal</h1>
+                <h1 className="text-3xl font-bold tracking-tighter">Rap's Braindump</h1>
                 <p className="text-gray-400">
                     {step === "email"
                         ? "Enter your email to sign in."
