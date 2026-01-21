@@ -1,6 +1,7 @@
 import { login } from "./actions";
 
-export default function LoginPage({ searchParams }: { searchParams: { message?: string } }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
+    const { message } = await searchParams;
     return (
         <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
             <div className="w-full max-w-sm space-y-8">
