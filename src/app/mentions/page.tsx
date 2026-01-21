@@ -10,7 +10,7 @@ export default async function MentionsPage() {
 
     return (
         <main className="flex min-h-screen justify-center bg-black text-white">
-            <div className="w-full max-w-xl border-x border-gray-800 min-h-screen p-4">
+            <div className="w-full max-w-xl border-x border-gray-800 min-h-screen px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
                 <header className="flex items-center gap-4 mb-8">
                     <Link href="/" className="p-2 hover:bg-white/10 rounded-full transition-colors">
                         <ArrowLeft className="h-6 w-6" />

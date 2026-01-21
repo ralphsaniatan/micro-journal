@@ -78,7 +78,7 @@ export function SettingsForm({ initialProfile, initialLinks }: SettingsFormProps
     return (
         <main className="flex min-h-screen justify-center">
             <div className="w-full max-w-xl border-x border-gray-800 min-h-screen bg-black">
-                <header className="sticky top-0 z-10 border-b border-gray-800 bg-black/80 backdrop-blur-md p-4 flex items-center gap-4">
+                <header className="sticky top-0 z-10 border-b border-gray-800 bg-black/80 backdrop-blur-md px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))] flex items-center gap-4">
                     <Link href="/" className="hover:bg-white/10 p-2 rounded-full transition-colors">
                         <ArrowLeft className="h-5 w-5 text-white" />
                     </Link>
