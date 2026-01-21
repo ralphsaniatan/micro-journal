@@ -67,7 +67,6 @@ export function Gatekeeper({ token }: { token: string }) {
                             placeholder="Your Name (e.g. Alice)"
                             className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
                         />
-                        />
                     </div>
                     {error && (
                         <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
