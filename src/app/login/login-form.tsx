@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { sendLoginCode, verifyLoginCode } from "./actions";
+import { useState, useTransition, useEffect } from "react";
+import { sendLoginCode, verifyLoginCode, getOwnerEmail } from "./actions";
 import { useRouter } from "next/navigation";
 
 export function LoginForm() {
@@ -12,8 +12,18 @@ export function LoginForm() {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 
-    const handleSendCode = async (formData: FormData) => {
-        const emailInput = formData.get("email") as string;
+    const [ownerEmail, setOwnerEmail] = useState<string | null>(null);
+
+    useEffect(() => {
+        getOwnerEmail().then((email) => {
+            if (email) setOwnerEmail(email);
+        });
+    }, []);
+
+    const handleSendCode = async (formData?: FormData) => {
+        // If owner mode, use ownerEmail, else get from form
+        const emailInput = ownerEmail || (formData?.get("email") as string);
+
         setError("");
 
         startTransition(async () => {
@@ -41,7 +51,6 @@ export function LoginForm() {
                 if (res?.error) {
                     setError(res.error);
                 }
-                // Determine if success usually handled by redirect in server action
             } catch (err) {
                 setError("Failed to verify code.");
             }
@@ -54,7 +63,7 @@ export function LoginForm() {
                 <h1 className="text-3xl font-bold tracking-tighter">Rap's Braindump</h1>
                 <p className="text-gray-400">
                     {step === "email"
-                        ? "Enter your email to sign in."
+                        ? (ownerEmail ? "Welcome back, Rap." : "Enter your email to sign in.")
                         : `Enter the code sent to ${email}`}
                 </p>
             </div>
@@ -66,23 +75,35 @@ export function LoginForm() {
             )}
 
             {step === "email" ? (
-                <form action={handleSendCode} className="flex flex-col gap-4">
-                    <input
-                        name="email"
-                        type="email"
-                        placeholder="hello@example.com"
-                        required
-                        defaultValue={email}
-                        className="w-full rounded-lg border border-gray-800 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
-                    />
-                    <button
-                        type="submit"
-                        disabled={isPending}
-                        className="w-full rounded-lg bg-white px-4 py-3 font-semibold text-black hover:bg-gray-200 transition-colors disabled:opacity-50"
-                    >
-                        {isPending ? "Sending..." : "Continue"}
-                    </button>
-                </form>
+                ownerEmail ? (
+                    <div className="flex flex-col gap-4">
+                        <button
+                            onClick={() => handleSendCode()}
+                            disabled={isPending}
+                            className="w-full rounded-lg bg-white px-4 py-3 font-semibold text-black hover:bg-gray-200 transition-colors disabled:opacity-50"
+                        >
+                            {isPending ? "Sending Code..." : "Send Login Code"}
+                        </button>
+                    </div>
+                ) : (
+                    <form action={handleSendCode} className="flex flex-col gap-4">
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="hello@example.com"
+                            required
+                            defaultValue={email}
+                            className="w-full rounded-lg border border-gray-800 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                        />
+                        <button
+                            type="submit"
+                            disabled={isPending}
+                            className="w-full rounded-lg bg-white px-4 py-3 font-semibold text-black hover:bg-gray-200 transition-colors disabled:opacity-50"
+                        >
+                            {isPending ? "Sending..." : "Continue"}
+                        </button>
+                    </form>
+                )
             ) : (
                 <form action={handleVerify} className="flex flex-col gap-4">
                     <input
