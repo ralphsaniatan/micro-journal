@@ -11,11 +11,24 @@ export async function login(formData: FormData) {
     redirect("/login?message=check_email");
 }
 
-export async function sendLoginCode(email: string) {
+export async function getOwnerEmail() {
+    return process.env.USER_EMAIL;
+}
+
+export async function sendLoginCode(email?: string) {
     const supabase = await createClient();
 
+    let targetEmail = email;
+    if (!targetEmail) {
+        targetEmail = process.env.USER_EMAIL;
+    }
+
+    if (!targetEmail) {
+        return { error: "Email is required" };
+    }
+
     const { error } = await supabase.auth.signInWithOtp({
-        email,
+        email: targetEmail,
         options: {
             shouldCreateUser: true,
             // emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback`,
@@ -27,7 +40,7 @@ export async function sendLoginCode(email: string) {
         return { error: error.message };
     }
 
-    return { success: true };
+    return { success: true, emailUsed: targetEmail };
 }
 
 export async function verifyLoginCode(email: string, code: string) {
