@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { type Entry } from "@/types/entry";
 import { revalidatePath } from "next/cache";
+import { validateUrl } from "@/utils/ssrf";
 
 export async function getEntries(tag?: string, page = 0, limit = 12): Promise<Entry[]> {
     const supabase = await createClient();
@@ -67,6 +68,7 @@ export async function getEntries(tag?: string, page = 0, limit = 12): Promise<En
 export async function fetchUrlMetadata(url: string) {
     if (!url.startsWith('http')) return null;
     try {
+        await validateUrl(url);
         const res = await fetch(url, { next: { revalidate: 3600 } });
         const html = await res.text();
 
