@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition, useRef } from "react";
+import { useEffect, useState, useTransition, useRef, useCallback } from "react";
 import { Feed } from "./feed";
 import { type Entry } from "@/types/entry";
 import { Loader2 } from "lucide-react";
@@ -15,17 +15,27 @@ interface InfiniteFeedProps {
 export function InfiniteFeed({ initialEntries, loader, currentUserId, tagBaseUrl }: InfiniteFeedProps) {
     const [entries, setEntries] = useState<Entry[]>(initialEntries);
     const [page, setPage] = useState(1); // Start asking for page 1 (since 0 is initial)
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(initialEntries.length >= 12);
     const [isPending, startTransition] = useTransition();
     const observerTarget = useRef<HTMLDivElement>(null);
 
-    // If initial entries are less than limit (25), we assume no more data?
-    // Or we just try to fetch next page.
-    useEffect(() => {
-        setEntries(initialEntries);
-        setPage(1);
-        setHasMore(initialEntries.length >= 12);
-    }, [initialEntries]);
+    // Removed the useEffect that syncs initialEntries to state.
+    // The parent component should control the key to force remount if initialEntries changes significantly.
+
+    const loadMore = useCallback(() => {
+        startTransition(async () => {
+            const newEntries = await loader(page);
+            if (newEntries.length === 0) {
+                setHasMore(false);
+            } else {
+                setEntries((prev) => [...prev, ...newEntries]);
+                setPage((p) => p + 1);
+                if (newEntries.length < 12) {
+                    setHasMore(false);
+                }
+            }
+        });
+    }, [page, loader]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -42,22 +52,7 @@ export function InfiniteFeed({ initialEntries, loader, currentUserId, tagBaseUrl
         }
 
         return () => observer.disconnect();
-    }, [hasMore, isPending]);
-
-    const loadMore = () => {
-        startTransition(async () => {
-            const newEntries = await loader(page);
-            if (newEntries.length === 0) {
-                setHasMore(false);
-            } else {
-                setEntries((prev) => [...prev, ...newEntries]);
-                setPage((p) => p + 1);
-                if (newEntries.length < 12) {
-                    setHasMore(false);
-                }
-            }
-        });
-    };
+    }, [hasMore, isPending, loadMore]);
 
     return (
         <div className="space-y-6">
@@ -71,7 +66,7 @@ export function InfiniteFeed({ initialEntries, loader, currentUserId, tagBaseUrl
 
             {!hasMore && entries.length > 0 && (
                 <div className="text-center text-gray-600 text-sm py-8 space-y-2">
-                    <p>You've reached the start of the dump.</p>
+                    <p>You&apos;ve reached the start of the dump.</p>
                     <p className="text-[12px] opacity-60">Vibecoded by Ralph for Ralph © 2025</p>
                 </div>
             )}
