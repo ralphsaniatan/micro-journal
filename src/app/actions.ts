@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { type Entry } from "@/types/entry";
+import { aggregateTags } from "../utils/tag-aggregator";
 import { revalidatePath } from "next/cache";
 
 export async function getEntries(tag?: string, page = 0, limit = 12): Promise<Entry[]> {
@@ -95,32 +96,7 @@ export async function getAllTags(): Promise<Array<{ tag: string, count: number, 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return [];
 
-    const { data } = await supabase
-        .from("entries")
-        .select('tags')
-        .eq('user_id', user.id);
-
-    if (!data) return [];
-
-    const tagCounts = new Map<string, number>();
-
-    data.forEach(row => {
-        if (row.tags && Array.isArray(row.tags)) {
-            row.tags.forEach((tag: string) => {
-                tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
-            });
-        }
-    });
-
-    const result = Array.from(tagCounts.entries())
-        .map(([tag, count]) => ({
-            tag,
-            count,
-            type: tag.startsWith('@') ? 'mention' : 'hashtag'
-        }))
-        .sort((a, b) => b.count - a.count) as Array<{ tag: string, count: number, type: 'hashtag' | 'mention' }>;
-
-    return result;
+    return aggregateTags(supabase, user.id);
 }
 
 export async function getEntryDates(): Promise<string[]> {
