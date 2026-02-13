@@ -123,19 +123,19 @@ export async function getAllTags(): Promise<Array<{ tag: string, count: number, 
     return result;
 }
 
-export async function getEntryDates(): Promise<string[]> {
+export async function getEntryDates(): Promise<number[]> {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return [];
 
-    const { data } = await supabase
-        .from("entries")
-        .select('created_at')
-        .eq('user_id', user.id);
+    const { data, error } = await supabase.rpc('get_entry_timestamps');
 
-    if (!data) return [];
+    if (error) {
+        console.error("Error fetching entry dates", error);
+        return [];
+    }
 
-    return data.map(d => d.created_at);
+    return (data as unknown as number[]) || [];
 }
 
 export async function getEntryById(id: string): Promise<Entry | null> {

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface HeatmapProps {
-    dates: string[];
+    dates: number[];
 }
 
 export function Heatmap({ dates }: HeatmapProps) {
@@ -15,8 +15,8 @@ export function Heatmap({ dates }: HeatmapProps) {
         const counts = new Map<string, number>();
         const years = new Set<number>();
 
-        dates.forEach(dateStr => {
-            const date = new Date(dateStr);
+        dates.forEach(timestamp => {
+            const date = new Date(timestamp);
             const key = date.toLocaleDateString('en-CA');
             counts.set(key, (counts.get(key) || 0) + 1);
             years.add(date.getFullYear());
