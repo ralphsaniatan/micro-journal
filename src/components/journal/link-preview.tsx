@@ -1,15 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchUrlMetadata } from "@/app/actions";
+import { getMetadata, type LinkMetadata } from "@/utils/metadata-client";
 import { X, ExternalLink } from "lucide-react";
-
-interface LinkMetadata {
-    title?: string | null;
-    description?: string | null;
-    image?: string | null;
-    url: string;
-}
 
 export function LinkPreview({ url }: { url: string }) {
     const [metadata, setMetadata] = useState<LinkMetadata | null>(null);
@@ -18,7 +11,7 @@ export function LinkPreview({ url }: { url: string }) {
 
     useEffect(() => {
         let mounted = true;
-        fetchUrlMetadata(url).then(data => {
+        getMetadata(url).then(data => {
             if (mounted && data) setMetadata(data);
             if (mounted) setLoading(false);
         });
