@@ -4,6 +4,7 @@ import { Reply, MoreHorizontal, Trash2, Edit2, AlertCircle } from "lucide-react"
 import { type Entry } from "@/types/entry";
 import { clsx } from "clsx";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useTransition } from "react";
 import { LinkPreview } from "./link-preview";
 import { deleteEntry } from "@/app/actions";
@@ -140,7 +141,14 @@ export function EntryCard({ entry, hasParent, hasReply, threadIndex, totalCount,
                         (hasParent || hasReply) && "ring-4 ring-black"
                     )}>
                         {entry.author?.avatar_url ? (
-                            <img src={entry.author.avatar_url} alt="Ava" className="h-full w-full object-cover" />
+                            <Image
+                                src={entry.author.avatar_url}
+                                alt={entry.author.username || "Avatar"}
+                                width={40}
+                                height={40}
+                                className="h-full w-full object-cover"
+                                unoptimized={!process.env.NEXT_PUBLIC_SUPABASE_URL || !entry.author.avatar_url.startsWith(process.env.NEXT_PUBLIC_SUPABASE_URL)}
+                            />
                         ) : (
                             <div className="h-full w-full flex items-center justify-center text-gray-400 font-bold bg-gray-900">?</div>
                         )}

@@ -11,8 +11,25 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   },
 });
 
+const remotePatterns = [];
+
+try {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (supabaseUrl) {
+    const hostname = new URL(supabaseUrl).hostname;
+    remotePatterns.push({
+      protocol: 'https' as const,
+      hostname,
+    });
+  }
+} catch (e) {
+  // Ignore invalid URL in environment variable
+}
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns,
+  },
 };
 
 export default withPWA(nextConfig);
