@@ -3,11 +3,28 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
+
+// Initialize admin client for rate limiting
+// Using service role key to bypass RLS and access the rate_limits table/function
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY is required for rate limiting but is not set.");
+}
+
+const supabaseAdmin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export async function login(formData: FormData) {
     // Deprecated in favor of sendLoginCode but kept for strict form actions if needed
     const email = formData.get("email") as string;
-    await sendLoginCode(email);
+    const result = await sendLoginCode(email);
+
+    if (result?.error) {
+        redirect(`/login?error=${encodeURIComponent(result.error)}`);
+    }
+
     redirect("/login?message=check_email");
 }
 
@@ -25,6 +42,28 @@ export async function sendLoginCode(email?: string) {
 
     if (!targetEmail) {
         return { error: "Email is required" };
+    }
+
+    // Rate Limiting Logic
+    try {
+        // We use the admin client to call the secure RPC function
+        const { data: isAllowed, error: rateLimitError } = await supabaseAdmin.rpc('check_rate_limit', {
+            key_param: targetEmail
+        });
+
+        if (rateLimitError) {
+            console.error("Rate limiting error:", rateLimitError);
+            // If the function doesn't exist (e.g. migration not run), we fail secure
+            return { error: "Service temporarily unavailable (Rate Limit Check Failed)" };
+        }
+
+        if (isAllowed === false) {
+            return { error: "Too many login attempts. Please wait a minute before trying again." };
+        }
+
+    } catch (err) {
+        console.error("Unexpected rate limiting error:", err);
+        return { error: "An unexpected error occurred." };
     }
 
     const { error } = await supabase.auth.signInWithOtp({
