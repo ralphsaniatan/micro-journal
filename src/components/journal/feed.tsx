@@ -15,14 +15,18 @@ export function Feed({ entries, currentUserId, tagBaseUrl }: { entries: Entry[],
 
     // Helper to flatten a thread (DFS) - returns the full linear conversation
     const flattenThread = (entry: Entry): Entry[] => {
-        const children = childrenMap.get(entry.id) || [];
-        // Sort children strictly by creation time
-        children.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        const flat: Entry[] = [];
+        const traverse = (current: Entry) => {
+            flat.push(current);
+            const children = childrenMap.get(current.id) || [];
+            // Sort children strictly by creation time
+            children.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
-        let flat = [entry];
-        children.forEach(child => {
-            flat = flat.concat(flattenThread(child));
-        });
+            children.forEach(child => {
+                traverse(child);
+            });
+        };
+        traverse(entry);
         return flat;
     };
 
