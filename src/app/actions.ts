@@ -90,6 +90,20 @@ export async function fetchUrlMetadata(url: string) {
     }
 }
 
+export async function fetchBatchUrlMetadata(urls: string[]) {
+    const uniqueUrls = Array.from(new Set(urls));
+    const results: Record<string, any> = {};
+
+    await Promise.all(uniqueUrls.map(async (url) => {
+        const data = await fetchUrlMetadata(url);
+        if (data) {
+            results[url] = data;
+        }
+    }));
+
+    return results;
+}
+
 export async function getAllTags(): Promise<Array<{ tag: string, count: number, type: 'hashtag' | 'mention' }>> {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
