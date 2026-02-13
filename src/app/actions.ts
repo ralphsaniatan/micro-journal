@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { type Entry } from "@/types/entry";
 import { revalidatePath } from "next/cache";
+import { fetchRecursiveParents } from "@/utils/entry";
 
 export async function getEntries(tag?: string, page = 0, limit = 12): Promise<Entry[]> {
     const supabase = await createClient();
@@ -34,31 +35,7 @@ export async function getEntries(tag?: string, page = 0, limit = 12): Promise<En
 
     // If filtering, we should try to fetch the context (parents)
     if (tag && entries.length > 0) {
-        const entryIds = new Set(entries.map(e => e.id));
-        const parentIdsToFetch = new Set<string>();
-
-        entries.forEach(e => {
-            if (e.parent_id && !entryIds.has(e.parent_id)) {
-                parentIdsToFetch.add(e.parent_id);
-            }
-        });
-
-        if (parentIdsToFetch.size > 0) {
-            const { data: parents } = await supabase
-                .from("entries")
-                .select(`
-                    *,
-                    author:profiles(username, avatar_url)
-                `)
-                .in("id", Array.from(parentIdsToFetch));
-
-            if (parents) {
-                // Add parents to the list. 
-                // Note: we're not doing full recursive thread reconstruction, just 1 level up.
-                // This acts as context.
-                entries = [...entries, ...(parents as Entry[])];
-            }
-        }
+        entries = await fetchRecursiveParents(supabase as any, entries);
     }
 
     return entries;
