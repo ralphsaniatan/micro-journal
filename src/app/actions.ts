@@ -78,7 +78,7 @@ export async function fetchUrlMetadata(url: string) {
         };
 
         const title = getMeta('og:title') || getMeta('twitter:title') || html.match(/<title>([^<]*)<\/title>/i)?.[1];
-        const description = getMeta('og:description') || getMeta('description');
+        const description = getMeta('og:description') || getMeta('twitter:description') || getMeta('description');
         const image = getMeta('og:image') || getMeta('twitter:image');
 
         if (!title && !image) return null;
