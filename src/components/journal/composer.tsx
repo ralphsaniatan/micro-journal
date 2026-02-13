@@ -152,15 +152,12 @@ export function EntryComposer() {
             setIsUploading(true);
             try {
                 // Upload files
-                const finalUrls: string[] = [];
-                for (const item of mediaItems) {
+                const finalUrls = await Promise.all(mediaItems.map(async (item) => {
                     if (item.file) {
-                        const url = await uploadImage(item.file);
-                        finalUrls.push(url);
-                    } else {
-                        finalUrls.push(item.url);
+                        return uploadImage(item.file);
                     }
-                }
+                    return item.url;
+                }));
 
                 if (editId) {
                     let isoDate = undefined;
