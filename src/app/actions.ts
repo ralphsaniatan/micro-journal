@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { type Entry } from "@/types/entry";
 import { revalidatePath } from "next/cache";
+import { createEntryInternal } from "./actions-logic";
 
 export async function getEntries(tag?: string, page = 0, limit = 12): Promise<Entry[]> {
     const supabase = await createClient();
@@ -154,29 +155,7 @@ export async function getEntryById(id: string): Promise<Entry | null> {
 
 export async function createEntry(formData: FormData) {
     const supabase = await createClient();
-    const content = formData.get("content") as string;
-    const parentId = formData.get("parent_id") as string;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error("Unauthorized");
-
-    if (!content || content.length > 240) throw new Error("Content invalid");
-
-    const tags = (content.match(/([#@][\w]+)/g) || []);
-    const mediaUrlsJson = formData.get("media_urls") as string;
-    const media_urls = mediaUrlsJson ? JSON.parse(mediaUrlsJson) : [];
-
-    const entryData: Partial<Entry> = {
-        user_id: user.id,
-        content,
-        tags,
-        media_urls,
-        parent_id: parentId || null,
-    };
-
-    const { error } = await supabase.from("entries").insert(entryData);
-    if (error) throw new Error("Failed to create entry");
-
+    await createEntryInternal(formData, supabase);
     revalidatePath("/");
 }
 
