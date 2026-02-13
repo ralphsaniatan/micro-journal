@@ -178,6 +178,7 @@ export function EntryCard({ entry, hasParent, hasReply, threadIndex, totalCount,
                                     <div className="absolute right-0 top-6 w-32 bg-black border border-gray-800 rounded-xl shadow-xl z-50 overflow-hidden py-1">
                                         <Link
                                             href={`/?edit=${entry.id}`}
+                                            onClick={() => setIsMenuOpen(false)}
                                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-white/10 text-left transition-colors"
                                         >
                                             <Edit2 className="h-3 w-3" />
