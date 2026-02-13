@@ -1,0 +1,39 @@
+
+> micro-journal@0.1.0 dev
+> next dev --webpack
+
+▲ Next.js 16.1.4 (webpack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+ ○ (pwa) PWA support is disabled.
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 2.7s
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (131kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+○ Compiling /login ...
+ GET /login 200 in 6.7s (compile: 6.3s, proxy.ts: 10ms, render: 395ms)
+ POST /login 200 in 180ms (compile: 7ms, proxy.ts: 40ms, render: 133ms)
+⨯ Error: Functions cannot be passed directly to Client Components unless you explicitly expose it by marking it with "use server". Or maybe you meant to call this function rather than return it.
+  <... initialEntries={[...]} currentUserId=... loader={function loader}>
+                                                       ^^^^^^^^^^^^^^^^^
+    at stringify (<anonymous>) {
+  digest: '525629458'
+}
+ GET / 200 in 3.8s (compile: 2.8s, proxy.ts: 186ms, render: 809ms)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (131kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ GET / 200 in 988ms (compile: 249ms, proxy.ts: 27ms, render: 711ms)
+TypeError: fetch failed
+    at ignore-listed frames {
+  [cause]: Error: getaddrinfo ENOTFOUND dummy.supabase.co
+      at ignore-listed frames {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'dummy.supabase.co'
+  }
+}
+○ Compiling /_error ...
+ GET /_next/image?url=https%3A%2F%2Fdummy.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Favatars%2Ftest.jpg&w=48&q=75 500 in 5.8s (compile: 5.8s, render: 65ms)
+ GET /_next/image?url=https%3A%2F%2Fdummy.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Favatars%2Ftest.jpg&w=48&q=75 500 in 5.8s (compile: 5.8s, render: 66ms)
+[?25h
